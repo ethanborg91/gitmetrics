@@ -1,5 +1,5 @@
 # ─── Python virtualenv & bytecode ─────────────────────────────────────────────
-.venv/                       # your project's virtual environment
+server/.venv/                       # your project's virtual environment
 __pycache__
 *.py[cod]                   # .pyc, .pyo, .pyd
 .pytest_cache/             # pytest cache folder
