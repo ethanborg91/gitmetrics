@@ -1,14 +1,14 @@
 # ─── Python virtualenv & bytecode ─────────────────────────────────────────────
-server/.venv/                       # your project's virtual environment
+server/.venv                  
 __pycache__
-*.py[cod]                   # .pyc, .pyo, .pyd
-.pytest_cache/             # pytest cache folder
+*.py[cod]            
+.pytest_cache          
 
 # ─── Node & Next.js build output ─────────────────────────────────────────────
-web/node_modules/
-web/.next/
-web/dist/
-web/out/
+web/node_modules
+web/.next
+web/dist
+web/out
 
 # ─── Go build artifacts ──────────────────────────────────────────────────────
 cli/*.exe
