@@ -9,7 +9,7 @@ def sample():
     return {
         "version": 1,
         "client_id": str(uuid.uuid4()),
-        "repo_hash": hashlib.sha256(b"https://github.com/ethanborg91/commitmood").hexdigest(),
+        "repo_hash": hashlib.sha256(b"https://github.com/ethanborg91/gitmetrics").hexdigest(),
         "commit_sha": "abc1234",
         "timestamp": datetime.datetime.utcnow().isoformat(timespec="seconds") + "Z",
         "tz_offset_min": -240
