@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    container_name: gm-postgres
+    environment:
+      POSTGRES_USER: gm
+      POSTGRES_PASSWORD: gm
+      POSTGRES_DB: gitmetrics
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: gm-api
+    environment:
+      DATABASE_URL: postgresql+asyncpg://gm:gm@db:5432/gitmetrics
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./server:/app
+    command: >
+      python -m uvicorn main:app
+      --host 0.0.0.0
+      --port 8000
+      --reload
+
+volumes:
+  db_data:
