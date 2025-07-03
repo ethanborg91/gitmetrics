@@ -1,27 +1,26 @@
-# ──────────────────────────────────────────────────────────────
-#  Dockerfile   (save as server/Dockerfile)
-#  Build with:  docker compose build api
-# ──────────────────────────────────────────────────────────────
+# server/Dockerfile
 
-# 1) Base image — Python 3.12 on slim Debian
-FROM python:3.12-slim AS base
+# 1) Base Python image
+FROM python:3.12-slim
 
-# 2) System-level packages you need for pip wheels that compile
+# 2) Install build tools
 RUN apt-get update \
     && apt-get install -y --no-install-recommends build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# 3) Everything below happens inside /app
+# 3) Work inside /app
 WORKDIR /app
 
-# 4) Copy only requirements first for Docker layer-cache efficiency
-COPY requirements.txt .
-
+# 4) Copy & install Python deps
+#    (context is the repo root, so this picks up server/requirements.txt)
+COPY server/requirements.txt .  
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 5) Copy the FastAPI application *after* deps are installed
-#    (use the path relative to the build context root)
-COPY . .
+# 5) Copy your app code into /app
+COPY server/ .                  
 
-# 6) Default command — starts Uvicorn when the container runs
-CMD ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# 6) Copy the JSON schema into /app/schemas
+COPY schemas/ ./schemas        
+
+# 7) Default command
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
