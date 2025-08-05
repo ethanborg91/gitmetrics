@@ -1,6 +1,6 @@
-import { EventMetrics } from './types';
-import { CommitChart } from '@/components/CommitChart';
-import { StatCard } from '@/components/StatCard';
+import { EventMetrics } from '../../types/types';
+import { CommitChart } from '../../components/CommitChart';
+import { StatCard } from '../../components/StatCard';
 
 export default async function Dashboard() {
   const res = await fetch(
@@ -15,10 +15,10 @@ export default async function Dashboard() {
   const data: EventMetrics = await res.json();
 
   return (
-    <main className="p-6 space-y-6">
+    <main className="p-8 mx-auto max-w-4xl bg-gray-50 min-h-screen">
       <h1 className="text-2xl font-bold">GitMetrics dashboard</h1>
 
-      <section className="grid grid-cols-2 gap-6">
+      <section className="grid grid-cols-3 gap-6">
         <StatCard label="Total commits" value={data.total_commits} />
         <StatCard label="Repos tracked" value={data.repos} />
         {/* add more cards as you extend /summary */}
