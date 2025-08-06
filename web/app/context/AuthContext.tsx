@@ -36,15 +36,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string) => {
     try {
-      const res = await fetch('/api/login', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ username: email, password }),
+        credentials: 'include',
       });
       if (!res.ok) throw new Error('Login failed');
-      const { token } = await res.json();
-      Cookies.set('authToken', token, { secure: true, httpOnly: true, sameSite: 'strict' });
-      const decoded: { email: string } = jwtDecode(token);
+      const { access_token } = await res.json();
+      Cookies.set('authToken', access_token, { secure: true, httpOnly: true, sameSite: 'strict' });
+      const decoded: { email: string } = jwtDecode(access_token);
       setUser({ email: decoded.email });
       router.push('/dashboard');
     } catch (error) {
@@ -54,15 +55,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signup = async (email: string, password: string) => {
     try {
-      const res = await fetch('/api/signup', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/signup`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ username: email, password }),
+        credentials: 'include',
       });
       if (!res.ok) throw new Error('Signup failed');
-      const { token } = await res.json();
-      Cookies.set('authToken', token, { secure: true, httpOnly: true, sameSite: 'strict' });
-      const decoded: { email: string } = jwtDecode(token);
+      const { access_token } = await res.json();
+      Cookies.set('authToken', access_token, { secure: true, httpOnly: true, sameSite: 'strict' });
+      const decoded: { email: string } = jwtDecode(access_token);
       setUser({ email: decoded.email });
       router.push('/dashboard');
     } catch (error) {

@@ -1,4 +1,5 @@
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
+from typing import AsyncGenerator
 from sqlalchemy.sql import text
 import os
 import json
@@ -17,3 +18,10 @@ async def insert_raw_event(payload: dict, event_id: str):
             {"id": event_id, "pl": json.dumps(payload)},
         )
         await session.commit()
+
+async def get_db() -> AsyncGenerator[AsyncSession, None]:
+    session = Session()
+    try:
+        yield session
+    finally:
+        await session.close()
