@@ -9,7 +9,7 @@ export default function Nav() {
       {user ? (
         <>
           <span className="text-sm">Welcome, {user.email}</span>
-          <button onClick={logout} className="text-sm hover:underline">
+          <button onClick={logout} className="cursor-pointer text-sm hover:underline">
             Logout
           </button>
         </>
