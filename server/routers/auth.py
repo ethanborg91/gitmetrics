@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 import bcrypt
 from datetime import datetime, timedelta, timezone
-from database import Session, get_db
+from database import get_db
 from repos import UserRepo 
 from models import User
 from config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES 
@@ -28,14 +28,14 @@ async def get_current_user(
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
+        email: str = payload.get("sub")
+        if email is None:
             raise credentials_exception
     except JWTError:
         raise credentials_exception
     
     # Query the user from DB (async for performance in FastAPI)
-    user = await db.execute(select(User).where(User.username == username))
+    user = await db.execute(select(User).where(User.email == email))
     user = user.scalar_one_or_none()
     if user is None:
         raise credentials_exception
@@ -62,15 +62,15 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 @router.post("/signup", response_model=Token)
-async def signup(form_data: OAuth2PasswordRequestForm = Depends(), session: AsyncSession = Depends(Session)):
+async def signup(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)):
     hashed_password = hash_password(form_data.password)
-    user = await user_repo.create(session, form_data.username, hashed_password)
+    user = await user_repo.create(db, form_data.username, hashed_password)
     access_token = create_access_token({"sub": user.email})
     return {"access_token": access_token, "token_type": "bearer"}
 
 @router.post("/login", response_model=Token)
-async def login(form_data: OAuth2PasswordRequestForm = Depends(), session: AsyncSession = Depends(Session)):
-    user = await user_repo.get_by_email(session, form_data.username)
+async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)):
+    user = await user_repo.get_by_email(db, form_data.username)
     if not user or not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(status_code=400, detail="Incorrect email or password")
     access_token = create_access_token({"sub": user.email})
