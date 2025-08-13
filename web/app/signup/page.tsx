@@ -1,10 +1,10 @@
 'use client';
 import { useEffect, useActionState } from 'react';
 import { toast } from 'react-toastify';
-import { loginAction } from '../actions/auth';
+import { signupAction } from '../actions/auth';
 
-export default function LoginPage() {
-  const [state, formAction, pending] = useActionState(loginAction, { message: '' });
+export default function SignupPage() {
+  const [state, formAction, pending] = useActionState(signupAction, { message: '' });
 
   useEffect(() => {
     if (state?.message) {
@@ -29,10 +29,9 @@ export default function LoginPage() {
         />
         <button
           type="submit"
-          disabled={pending}
           className="w-full cursor-pointer rounded bg-blue-600 py-2 text-white hover:bg-blue-700"
         >
-          {pending ? 'Logging in...' : 'Login'}
+          {pending ? 'Signing up...' : 'Signup'}
         </button>
       </form>
     </section>
