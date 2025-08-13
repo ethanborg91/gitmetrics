@@ -3,7 +3,17 @@
 import { useAuth } from '../app/context/AuthContext';
 
 export default function Nav() {
-  const { user, logout } = useAuth();
+  const { user, logout, loading } = useAuth();
+
+  // Don't render anything while auth is loading to prevent flash
+  if (loading) {
+    return (
+      <nav className="space-x-4">
+        <div className="h-6 w-24 animate-pulse bg-gray-200 rounded dark:bg-gray-700"></div>
+      </nav>
+    );
+  }
+
   return (
     <nav className="space-x-4">
       {user ? (

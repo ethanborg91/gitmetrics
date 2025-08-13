@@ -10,12 +10,12 @@ engine = create_async_engine(DATABASE_URL, pool_pre_ping=True)
 Session = async_sessionmaker(engine, expire_on_commit=False)
 
 
-async def insert_raw_event(payload: dict, event_id: str):
+async def insert_raw_event(payload: dict, event_id: str , user_id: str):
     """Insert full JSONB payload."""
     async with Session() as session:
         await session.execute(
-            text("INSERT INTO raw_events (id, payload) VALUES (:id, :pl)"),
-            {"id": event_id, "pl": json.dumps(payload)},
+            text("INSERT INTO raw_events (id, payload, user_id) VALUES (:id, :pl, :user_id)"),
+            {"id": event_id, "pl": json.dumps(payload), "user_id": user_id},
         )
         await session.commit()
 

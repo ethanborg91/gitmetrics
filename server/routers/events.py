@@ -19,34 +19,39 @@ async def ingest(event: dict, current_user: User = Depends(get_current_user)):
         raise HTTPException(status_code=400, detail=f"schema error: {e.message}")
 
     event_id = str(uuid.uuid4())
-    event['user_id'] = current_user.id
-    await insert_raw_event(event, event_id)
+    event['user_id'] = str(current_user.id)
+    await insert_raw_event(event, event_id, str(current_user.id))
     return {"status": "ok", "id": event_id}
 
 @router.get("/summary")
-async def get_summary(current_user: User = Depends(get_current_user), session: AsyncSession = Depends(Session)):
+async def get_summary(current_user: User = Depends(get_current_user)):
     try:
         async with Session() as session:
             # Query 1: Total commits
             total_commits_results = await session.execute(
-                text("SELECT COUNT (*) FROM raw_events")
+                text("SELECT COUNT(*) FROM raw_events WHERE payload->>'user_id' = :user_id")
+                .bindparams(user_id=str(current_user.id))
             )
             total_commits = total_commits_results.scalar() or 0
 
             # Query 2: Repos tracked
             repos_result = await session.execute(
-                text("SELECT COUNT(DISTINCT payload->>'repo_hash') FROM raw_events")
+               text("SELECT COUNT(DISTINCT payload->>'repo_hash') FROM raw_events WHERE payload->>'user_id' = :user_id")
+                .bindparams(user_id=str(current_user.id))
             )
             repos = repos_result.scalar() or 0
 
             # Query 3: Commits by day
             commits_by_day_result = await session.execute(
                 text(
-                    """SELECT DATE(payload->>'timestamp') AS date, COUNT(*) AS count
+                    """
+                    SELECT DATE((payload->>'timestamp')::timestamp) AS date, COUNT(*) AS count
                     FROM raw_events
-                    GROUP BY DATE(payload->>'timestamp')
-                    ORDER BY date"""
-                ).bindparams(user_id=current_user.id)
+                    WHERE payload->>'user_id' = :user_id
+                    GROUP BY 1
+                    ORDER BY 1
+                    """
+                ).bindparams(user_id=str(current_user.id))
             )
             commits_by_day = [
                 {"date": str(row[0]), "count": row[1]}
@@ -61,4 +66,4 @@ async def get_summary(current_user: User = Depends(get_current_user), session: A
             }
 
     except Exception as e:
-        raise HTTPException(status_code=500, details=f"Database error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")

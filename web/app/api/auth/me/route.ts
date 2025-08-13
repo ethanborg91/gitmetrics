@@ -6,8 +6,6 @@ export async function GET() {
   const cookieStore = await cookies();
   const token = cookieStore.get('authToken')?.value;
 
-  console.log(token);
-
   if (!token) {
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   }

@@ -2,15 +2,19 @@
 import { useEffect, useActionState } from 'react';
 import { toast } from 'react-toastify';
 import { signupAction } from '../actions/auth';
+import { useRouter } from 'next/navigation';
 
 export default function SignupPage() {
+  const router = useRouter();
   const [state, formAction, pending] = useActionState(signupAction, { message: '' });
 
   useEffect(() => {
-    if (state?.message) {
+    if (state?.success) {
+      router.push('/dashboard');
+    } else if (state?.message) {
       toast.error(state.message);
     }
-  }, [state]);
+  }, [state, router]);
 
   return (
     <section className="pb-50 flex min-h-screen items-center justify-center">
