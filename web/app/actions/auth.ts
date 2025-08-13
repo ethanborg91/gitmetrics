@@ -2,7 +2,7 @@
 
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { jwtDecode } from 'jwt-decode'; // If needed for validation; install if not present
+import { jwtDecode } from 'jwt-decode';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL; // Ensure this is set
 
@@ -46,11 +46,11 @@ export async function loginAction(_prevState: { message: string } | undefined, f
       path: '/',
       // maxAge: 3600, // Add expiry if needed (e.g., 1 hour)
     });
-
-    redirect('/dashboard');
   } catch (error: any) {
     return { message: error.message || 'Login failed' };
   }
+
+  redirect('/dashboard');
 }
 
 // Similar for signup
@@ -97,11 +97,11 @@ export async function signupAction(
       path: '/',
       // maxAge: 3600, // Add expiry if needed (e.g., 1 hour)
     });
-
-    redirect('/dashboard');
   } catch (error: any) {
     return { message: error.message || 'Signup failed' };
   }
+
+  redirect('/dashboard');
 }
 
 // For logout (call from client)

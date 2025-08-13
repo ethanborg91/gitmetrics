@@ -31,7 +31,6 @@ export default function Dashboard() {
   }, [user, authLoading, router]);
 
   if (authLoading) return <p>Loading...</p>;
-  if (!user) return null;
   if (error) return <p className="text-red-600">{error}</p>;
   if (!data) return <p>Loading data...</p>;
 
