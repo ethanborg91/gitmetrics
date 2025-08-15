@@ -2,15 +2,27 @@
 import { useEffect, useActionState } from 'react';
 import { toast } from 'react-toastify';
 import { signupAction } from '../actions/auth';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '../context/AuthContext';
 
 export default function SignupPage() {
+  const router = useRouter();
   const [state, formAction, pending] = useActionState(signupAction, { message: '' });
+  const { refreshUser, user, loading } = useAuth();
 
   useEffect(() => {
-    if (state?.message) {
+    if (state?.success) {
+      refreshUser();
+    } else if (state?.message) {
       toast.error(state.message);
     }
-  }, [state]);
+  }, [state, refreshUser]);
+
+  useEffect(() => {
+    if (user && !loading) {
+      router.push('/dashboard');
+    }
+  }, [user, loading, router]);
 
   return (
     <section className="pb-50 flex min-h-screen items-center justify-center">

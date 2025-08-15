@@ -3,6 +3,8 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { ReactNode } from 'react';
 import { AuthProvider } from './context/AuthContext';
+import { cookies } from 'next/headers';
+import { jwtDecode } from 'jwt-decode';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Nav from '../components/Nav';
@@ -14,11 +16,24 @@ export const metadata: Metadata = {
   description: 'Your Git Analytics Tool',
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get('authToken')?.value;
+  let initialUserEmail: string | null = null;
+  if (token) {
+    try {
+      const decoded = jwtDecode<{ sub: string }>(token);
+      initialUserEmail = decoded.sub || null;
+    } catch { }
+  }
+
   return (
     <html lang="en" className={inter.className}>
       <body className="bg-gray-50 text-gray-900 antialiased dark:bg-gray-800 dark:text-white">
-        <AuthProvider>
+        <AuthProvider initialUserEmail={initialUserEmail}>
           <header className="bg-white shadow dark:bg-gray-900">
             <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
               <h1 className="text-xl font-semibold">

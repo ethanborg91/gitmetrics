@@ -50,7 +50,7 @@ export async function loginAction(_prevState: { message: string } | undefined, f
     return { message: error.message || 'Login failed' };
   }
 
-  redirect('/dashboard');
+  return { success: true, message: '' };
 }
 
 // Similar for signup
@@ -101,7 +101,7 @@ export async function signupAction(
     return { message: error.message || 'Signup failed' };
   }
 
-  redirect('/dashboard');
+  return { success: true, message: '' };
 }
 
 // For logout (call from client)
