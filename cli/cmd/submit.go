@@ -108,7 +108,7 @@ var submitCmd = &cobra.Command{
             TZOffsetMin:  offset / 60,
             LinesAdded:   linesAdded,
             LinesDeleted: linesDeleted,
-			FilesChanged: filesChanged
+			FilesChanged: filesChanged,
         }
 
         // Submit

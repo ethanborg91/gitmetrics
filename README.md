@@ -1,14 +1,21 @@
 # GitMetrics
 
-GitMetrics turns raw Git activity — nothing more than timestamps, commit SHAs and line counts — into friendly visualisations and subtle nudges that help you (and eventually, small teams) spot burnout before it bites.
+Self-hosted Git analytics tool for tracking code changes and metrics.
 
----
+## Features
+- Backend: FastAPI with Postgres for storing events.
+- Frontend: Web with login, signup, and dashboard showcasing analytics.
+- CLI: Go CLI for auto-submitting metrics on Git commits.
 
-##  Why build this?
+## Installation
+- Backend: `docker-compose up api db`
+- CLI: `go install github.com/ethanborg91/gitmetrics/cli@latest`
 
-| Problem                                                                             | How GitMetrics helps                                                      |
-| ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| Late‑night or weekend coding streaks go unnoticed until productivity drops.         | Calendar heat‑map + “long‑session” timer surface unhealthy patterns fast. |
-| Most time‑tracking tools feel like surveillance or require full source‑code access. | Collects **metadata only** (no filenames, no diffs, SHA‑256 repo hash).   |
-| Setting up self‑hosted dashboards is a pain.                                        | One‑command Docker‑Compose; batteries‑included FastAPI + Postgres stack.  |
+## Usage - CLI
+- Auth: `gitmetrics auth <email> <password> [--server-url http://localhost:8000]` (creates JWT token).
+- Manual Submit: `gitmetrics submit` (sends current commit metrics).
+- Auto Hooks: `gitmetrics setup-hooks` (installs post-commit hook for auto on commits).
+- Default: `gitmetrics` (runs submit).
+
+Metrics include commit SHA, timestamp, lines added/deleted, files changed (hashed repo for privacy).
 
