@@ -24,6 +24,7 @@ type Event struct {
     TZOffsetMin  int    `json:"tz_offset_min"`
     LinesAdded   int    `json:"lines_added"`
     LinesDeleted int    `json:"lines_deleted"`
+	FilesChanged int `json:"files_changed"`
 }
 
 var submitCmd = &cobra.Command{
@@ -67,12 +68,13 @@ var submitCmd = &cobra.Command{
         if err != nil {
             return fmt.Errorf("get commit failed: %w", err)
         }
-        linesAdded, linesDeleted := 0, 0
+        linesAdded, linesDeleted, filesChanged := 0, 0, 0
         parentIter := commit.Parents()
         parent, err := parentIter.Next()
         if err == nil && parent != nil {
             patch, err := commit.Patch(parent)
             if err == nil && patch != nil {
+				filesChanged = len(patch.FilePatches())
                 stats := patch.Stats()
                 for _, stat := range stats {
                     linesAdded += stat.Addition
@@ -106,6 +108,7 @@ var submitCmd = &cobra.Command{
             TZOffsetMin:  offset / 60,
             LinesAdded:   linesAdded,
             LinesDeleted: linesDeleted,
+			FilesChanged: filesChanged
         }
 
         // Submit
