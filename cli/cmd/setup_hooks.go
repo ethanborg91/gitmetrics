@@ -18,6 +18,8 @@ var setupHooksCmd = &cobra.Command{
         // Create hooks dir if not exists
         if err := os.MkdirAll(hookDir, 0755); err != nil {
             return fmt.Errorf("create hooks dir failed: %w", err)
+
+			//commetn
         }
 
         // Write shell script to call gitmetrics submit
