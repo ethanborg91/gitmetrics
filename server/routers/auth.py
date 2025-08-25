@@ -75,3 +75,10 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSessi
         raise HTTPException(status_code=400, detail="Incorrect email or password")
     access_token = create_access_token({"sub": user.email})
     return {"access_token": access_token, "token_type": "bearer"}
+
+@router.get("/generate-cli-token", response_model=Token)
+async def generate_cli_token(current_user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)):
+    # Long-lived token (e.g., 365 days)
+    access_token_expires = timedelta(days=365)
+    access_token = create_access_token({"sub": current_user.email}, expires_delta=access_token_expires)
+    return {"access_token": access_token, "token_type": "bearer"}
