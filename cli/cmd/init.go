@@ -5,6 +5,7 @@ import (
 
     "github.com/spf13/cobra"
     "github.com/zalando/go-keyring"
+    "github.com/google/uuid"
 )
 
 var initCmd = &cobra.Command{
