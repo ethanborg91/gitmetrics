@@ -102,7 +102,7 @@ export default function Dashboard() {
       const tokenData = await response.json();
       setCliToken(tokenData.access_token);
       setCommand(
-        `go install github.com/ethanborg91/gitmetrics/cli@latest && gitmetrics init ${tokenData.access_token} --server-url ${serverUrl}`,
+        `go install github.com/ethanborg91/gitmetrics/cli@latest && cli init ${tokenData.access_token} --server-url ${serverUrl}`,
       );
     } catch (err: any) {
       console.error('Failed to generate CLI token:', err);
