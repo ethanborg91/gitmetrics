@@ -22,11 +22,11 @@ This is a learning-focused project to demonstrate Go CLI development, Git integr
 - **Testing:** Manual in sample repos; add Go tests in later steps.
 
 ## Commands
-- `gitmetrics` (default/root): Runs the submit logic (backward-compatible with current behavior).
-- `gitmetrics auth <email> <password> [--server-url http://localhost:8000]`: POSTs to /auth/login to get JWT, stores token and URL securely. Defaults to localhost:8000. (Use signup separately via API if new user.)
-- `gitmetrics submit`: Collects enhanced metrics (including lines_added/lines_deleted), builds Event JSON, and POSTs to /events with auth header.
-- `gitmetrics setup-hooks`: Creates an executable .git/hooks/post-commit script that runs `gitmetrics submit`.
-- `gitmetrics version`: Prints CLI version (e.g., v0.1.0).
+- `cli` (default/root): Runs the submit logic (backward-compatible with current behavior).
+- `cli auth <email> <password> [--server-url http://localhost:8000]`: POSTs to /auth/login to get JWT, stores token and URL securely. Defaults to localhost:8000. (Use signup separately via API if new user.)
+- `cli submit`: Collects enhanced metrics (including lines_added/lines_deleted), builds Event JSON, and POSTs to /events with auth header.
+- `cli setup-hooks`: Creates an executable .git/hooks/post-commit script that runs `cli submit`.
+- `cli version`: Prints CLI version (e.g., v0.1.0).
 
 ## Data Schema (Expanded Event Struct)
 Match backend JSON schema exactly (required fields + optionals we add). Validation enforces formats (e.g., repo_hash 64-hex, timestamp RFC3339, commit_sha 7-40 hex).

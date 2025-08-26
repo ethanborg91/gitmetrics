@@ -22,8 +22,8 @@ var setupHooksCmd = &cobra.Command{
 			//commetn
         }
 
-        // Write shell script to call gitmetrics submit
-        content := "#!/bin/sh\ngitmetrics submit\n"
+        // Write shell script to call cli submit
+        content := "#!/bin/sh\ncli submit\n"
         if err := os.WriteFile(hookPath, []byte(content), 0755); err != nil {
             return fmt.Errorf("write hook file failed: %w", err)
         }
